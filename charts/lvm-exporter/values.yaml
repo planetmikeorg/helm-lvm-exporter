@@ -1,0 +1,92 @@
+# RKE2 + RHEL 9 + SELinux values for this cluster
+# Use with: helm install lvm-exporter ./charts/lvm-exporter -n monitoring
+
+replicaCount: 1
+
+image:
+  repository: mwennrich/lvm-exporter
+  tag: "1.5.0"
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  clusterIP: None
+  port: 9080
+  targetPort: 9080
+
+networkPolicy:
+  enabled: false
+  prometheusNamespace: monitoring
+  prometheusPodSelector:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/component: prometheus
+
+ciliumNetworkPolicy:
+  enabled: true
+
+serviceMonitor:
+  enabled: true
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack-1
+  interval: 30s
+  scrapeTimeout: 20s
+
+podSecurityContext:
+  fsGroup: 0
+  runAsNonRoot: false
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  privileged: false
+  readOnlyRootFilesystem: true
+  runAsUser: 0
+  runAsGroup: 0
+  seccompProfile:
+    type: RuntimeDefault
+
+nodeSelector:
+  kubernetes.io/os: linux
+
+tolerations: []
+
+affinity: {}
+
+podAnnotations: {}
+
+priorityClassName: ""
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+
+extraVolumes: []
+extraVolumeMounts: []
+
+hostPaths:
+  runLvm:
+    path: /run/lvm
+    type: DirectoryOrCreate
+  etcLvm:
+    path: /etc/lvm
+    type: Directory
+  varLibLvm:
+    path: /var/lib/lvm
+    type: DirectoryOrCreate
+  dev:
+    path: /dev
+    type: Directory

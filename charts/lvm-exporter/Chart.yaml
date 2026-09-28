@@ -1,0 +1,18 @@
+apiVersion: v2
+name: lvm-exporter
+description: Prometheus LVM exporter as a DaemonSet for RKE2/RHEL 9 with SELinux-enabled nodes
+
+type: application
+version: 0.1.0
+appVersion: "0.6.0"
+keywords:
+  - prometheus
+  - monitoring
+  - lvm
+  - storage
+home: https://github.com/prometheus-community/lvm_exporter
+sources:
+  - https://github.com/prometheus-community/lvm_exporter
+maintainers:
+  - name: Michael Cleary
+  

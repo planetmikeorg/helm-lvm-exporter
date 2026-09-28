@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "lvm-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "lvm-exporter.labels" . | nindent 4 }}
+spec:
+  clusterIP: {{ .Values.service.clusterIP | quote }}
+  selector:
+    {{- include "lvm-exporter.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: http-metrics
+      port: {{ .Values.service.port }}
+      targetPort: metrics
+      protocol: TCP
